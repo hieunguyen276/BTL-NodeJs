@@ -9,9 +9,15 @@ User:
 
 Board:
  + Get all board: https://trelloscb.onrender.com/v1/board/
+ + Create a board: https://trelloscb.onrender.com/v1/board
+ + Update a board: https://trelloscb.onrender.com/v1/board/ + ID board
+ + Delete a board: https://trelloscb.onrender.com/v1/board/ + ID board
 
 List:
  + Get all list: https://trelloscb.onrender.com/v1/list/ + ID board
+ + Create a list: https://trelloscb.onrender.com/v1/list
+ + Update a list: https://trelloscb.onrender.com/v1/list/ + ID list
+ + Delete a board: https://trelloscb.onrender.com/v1/list/ + ID list
 
 Card: 
  + Get all card: https://trelloscb.onrender.com/v1/card/ + ID list
