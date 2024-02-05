@@ -17,7 +17,11 @@ List:
  + Get all list: https://trelloscb.onrender.com/v1/list/ + ID board
  + Create a list: https://trelloscb.onrender.com/v1/list
  + Update a list: https://trelloscb.onrender.com/v1/list/ + ID list
- + Delete a board: https://trelloscb.onrender.com/v1/list/ + ID list
+ + Delete a list: https://trelloscb.onrender.com/v1/list/ + ID list
 
 Card: 
  + Get all card: https://trelloscb.onrender.com/v1/card/ + ID list
+ + Create a card: https://trelloscb.onrender.com/v1/card
+ + Update a card: https://trelloscb.onrender.com/v1/list/ + ID card
+ + Delete a card: https://trelloscb.onrender.com/v1/list/ + ID card
+ + Get a card: https://trelloscb.onrender.com/v1/card/getCard/ + ID card
