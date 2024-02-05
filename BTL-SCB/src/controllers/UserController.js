@@ -20,7 +20,8 @@ class UserController {
             } else {
                 const user = await UserService.signup(data)
                 res.status(200).json({
-                    'msg' : 'SignUp successful'
+                    'msg' : 'SignUp successful',
+                    user
             })
             }
 

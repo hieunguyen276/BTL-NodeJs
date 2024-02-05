@@ -43,12 +43,14 @@ class UserService {
         }
     }
 
+
     signup = async (dataUser) =>{
         try {
             // Xử lý các nghiệp vụ liên quan
             // Gọi đến tầng model
             const user = new User(dataUser);
             await user.save();
+            console.log(user);
             return user;
         } catch (error) {
             throw error;
