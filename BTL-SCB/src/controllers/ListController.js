@@ -56,10 +56,19 @@ class ListController {
             const {listId} = req.params;
             
             const result = await ListService.delete(listId)
+            // console.log(result);
             if(result == true) {
-                res.status(200).json({
-                    'msg': 'Deleted'
-                })
+                const deleteAllCard = await ListService.deleteAllCard(listId);
+                // console.log(deleteAllCard);
+                if(deleteAllCard == true) {
+                    res.status(200).json({
+                        'msg': 'Deleted'
+                    })
+                } else {
+                    res.status(404).json({
+                        'msg': 'Delete all card error'
+                    })
+                }
             }else {
                 res.status(404).json({
                     'msg': 'ListId not found'

@@ -16,7 +16,7 @@ const cardValidationSchema = Joi.object({
   members: Joi.array(),
   dueDate: Joi.date(),
   cover: Joi.array(),
-  listId: Joi.string(),
+  listId: Joi.string(), 
   attachment: Joi.array()
 });
 

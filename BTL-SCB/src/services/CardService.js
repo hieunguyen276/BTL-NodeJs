@@ -48,7 +48,7 @@ class CardService {
             // $in lặp trong mảng 
             const user = await User.find({email: { $in: data.members} }).select('-_id username phone');
             // const members = await User.find({ email: { $in: email } });
-            console.log(user);
+            // console.log(user);
             return user;
         } catch (error) {
             throw error;

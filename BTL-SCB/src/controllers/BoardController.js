@@ -63,9 +63,24 @@ class BoardController {
             
             const result = await BoardService.delete(id)
             if(result == true) {
-                res.status(200).json({
-                    'msg': 'Deleted'
-                })
+                const deleteList = await BoardService.deleteAllList(id);
+                // console.log(deleteList);
+                if(deleteList) {
+                    const deleteCard = await BoardService.deleteAllCard(deleteList);
+                    if (deleteCard) { 
+                        res.status(200).json({
+                            'msg': 'Deleted'
+                        })
+                    } else {
+                        res.status(404).json({
+                            'msg': 'Delete all card error'
+                        })
+                    }
+                } else {
+                    res.status(404).json({
+                        'msg': 'Delete error'
+                    })
+                }
             }else {
                 res.status(404).json({
                     'msg': 'BoardId not found'

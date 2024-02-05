@@ -1,5 +1,6 @@
 const List = require("../models/List");
 const Board = require("../models/Board");
+const Card = require("../models/Card");
 
 
 class ListService {
@@ -81,6 +82,15 @@ class ListService {
         }
     }
 
+    deleteAllCard = async (listId) => {
+        try  {
+            const result = await Card.deleteMany({ listId: listId });
+            return true;
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
     delete = async (id) =>{
         try {
@@ -98,7 +108,7 @@ class ListService {
             // Xử lý các nghiệp vụ liên quan
             // Gọi đến tầng model'
             const lists = await List.find({ boardId }).sort({ position: -1 });
-            console.log(lists);
+            // console.log(lists);
             return lists;
         } catch (error) {
             throw error;

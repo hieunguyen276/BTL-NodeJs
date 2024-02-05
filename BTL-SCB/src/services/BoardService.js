@@ -1,4 +1,6 @@
 const Board = require("../models/Board");
+const List = require("../models/List");
+const Card = require("../models/Card");
 
 class BoardService {
 
@@ -53,6 +55,32 @@ class BoardService {
         }
     }
 
+    deleteAllCard = async (deleteListObjects) => {
+        try  {
+            // Tạo mảng mới chứa các _id từ mảng đối tượng ban đầu
+            const deleteListIds = deleteListObjects.map(list => list._id);
+            // console.log(deleteListIds);
+    
+            // Xóa tất cả các card có listId nằm trong mảng deleteListIds
+            const result = await Card.deleteMany({ listId: { $in: deleteListIds } });
+            // console.log(result);
+            return true;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
+    deleteAllList = async (id) => {
+        try  {
+            const result = await List.find({ boardId: id });
+            const deleted = await List.deleteMany({ boardId: id });
+            return result;
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
     delete = async (id) =>{
         try {
@@ -61,7 +89,7 @@ class BoardService {
             const checkBoardId = await Board.findOne({_id: id});
             if (checkBoardId) {
                 const board = await Board.findById(id);
-                // console.log(board);
+                // console.log(board);  
                 await board.deleteOne();
                 return true;
             } else { 
