@@ -4,10 +4,6 @@ class ListController {
     create = async (req, res, next) => {
         try {
             const {title, boardId} = req.body;
-            // const {idBoard} = req.params;
-            
-            // abc();
-            // Gọi đến tầng service
             let data1 = {title, boardId};
             let data2 = {boardId};
             const result = await ListService.checkBoardId(data2);
@@ -21,9 +17,7 @@ class ListController {
                 })  
             }
         } catch (error) {
-            // console.error(error); // In ra lỗi để xác định nguyên nhân
-            
-            res.status(500).json({ error: 'BoardId format is wrong '});  // Sai địng dạng ở đây là dài hơn or ngắn hơn
+            next(error);
         }
     };
 
@@ -32,22 +26,27 @@ class ListController {
         try {
             const {title} = req.body;
             const {listId} = req.params;
-            // abc();
-            // Gọi đến tầng service
             let data = {title}
-            const result = await ListService.update(listId, data)
 
+
+            const result = await ListService.checkListId(listId);
             if(result) {
-                res.status(200).json({
-                    'msg': 'Updated list'
-                })
-            } else { 
-                throw new Error('Update failed');
+                const listUpdate = await ListService.update(listId, data)
+                if(listUpdate) {
+                    const list = await ListService.getNewList(listId)
+                    res.status(200).json({
+                        'msg': 'Updated',
+                        list
+                    })
+                }else {
+                    throw new Error('Update failed');
+                } 
+                
+            } else {
+                res.status(404).json({ error: 'ListId not found' }); 
             }
         } catch (error) {
-            res.status(200).json({
-                'msg': 'ListId not found'
-            })
+            next(error);
         }
     };
 
@@ -55,21 +54,22 @@ class ListController {
     delete = async (req, res, next) => {
         try {
             const {listId} = req.params;
+            
             const result = await ListService.delete(listId)
-
-            if(result) {
+            if(result == true) {
                 res.status(200).json({
                     'msg': 'Deleted'
                 })
             }else {
-                throw new Error('Delete failed');
+                res.status(404).json({
+                    'msg': 'ListId not found'
+                })
             }
         } catch (error) {
-            res.status(200).json({
-                'msg': 'ListId not found'
-            })
+            next (error);
         }
     };
+
 
 
     getAll = async (req, res, next) => {

@@ -5,8 +5,6 @@ class BoardController {
         try {
             const {title, background} = req.body;
             
-            // abc();
-            // Gọi đến tầng service
             let data = {
                 title,
                 background: req.file ? req.file.path : background
@@ -18,7 +16,7 @@ class BoardController {
                     board
                 })
             } else { 
-                res.status(200).json({
+                res.status(404).json({
                     'msg': 'Tạo board thất bại'
                 })
             }
@@ -32,48 +30,55 @@ class BoardController {
         try {
             const {title, background} = req.body;
             const {id} = req.params;
-            // abc();
-            // Gọi đến tầng service
+
             let data = {
                 title,
                 background: req.file ? req.file.path : background
             }
-            const result = await BoardService.update(id, data)
 
+            const result = await BoardService.checkBoardId(id);
             if(result) {
-                res.status(200).json({
-                    'msg': 'Updated board'
-                })
-            } else { 
-                throw new Error('Update failed');
+                const boardUpdate = await BoardService.update(id, data)
+                if(boardUpdate) {
+                    const board = await BoardService.getNewBoard(id)
+                    res.status(200).json({
+                        'msg': 'Updated',
+                        board
+                    })
+                }else {
+                    throw new Error('Update failed');
+                } 
+                
+            } else {
+                res.status(404).json({ error: 'BoardId not found' });
             }
         } catch (error) {
             throw error;
         }
     };
 
-
     delete = async (req, res, next) => {
         try {
             const {id} = req.params;
+            
             const result = await BoardService.delete(id)
-
-            if(result) {
+            if(result == true) {
                 res.status(200).json({
                     'msg': 'Deleted'
                 })
             }else {
-                throw new Error('Delete failed');
+                res.status(404).json({
+                    'msg': 'BoardId not found'
+                })
             }
         } catch (error) {
-            throw error;
+            next (error);
         }
     };
 
 
     getAll = async (req, res, next) => {
         try {
-            // Goi den service
             const boards = await BoardService.getAll();
             res.status(200).json({
                 boards

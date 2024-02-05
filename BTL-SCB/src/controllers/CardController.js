@@ -5,17 +5,6 @@ class CardController {
         try {
             const {title, descriptions, members, dueDate, listId } = req.body;
             
-            // abc();
-            // Gọi đến tầng service
-            
-            // if (req.files) {
-            //     let path = ''
-            //     req.files.forEach(function (files, index, arr) {
-            //         path = path + files.path + ','
-            //     })
-            //     path =  path.substring(0, path.lastIndexOf(","))
-            //     attachment = path
-            // }
             if(req.files) {
                   // Xử lý cover
                 const cover = req.files ? req.files['cover'] : null;
@@ -37,22 +26,26 @@ class CardController {
             }     
 
             let data2 = {listId};
-            const list = await CardService.checkListId(data2)
+            let data3 = {members};
 
-            if(list) {
+
+            const result = await CardService.checkListId(data2);
+
+            if(result == false) {
+                res.status(404).json({ error: 'ListId not found' }); // Sai boardId 
+            } else {
                 const card = await CardService.create(data);
+                const infoMembers = await CardService.getMembers(data3)
                 res.status(200).json({
-                    card
-                })
-            } else { 
-                res.status(200).json({
-                    'msg': 'ListId not found'
+                    card, 
+                    infoMembers
                 })
             }
         } catch (error) {
-            res.status(500).json({ error: 'Không tồn tại listId này' });  
+            next(error);
         }
     };
+
 
     update = async (req, res, next) => {
         try {
@@ -77,18 +70,29 @@ class CardController {
                 }
             }     
 
-            // let data2 = {listId};
-            const result = await CardService.update(cardId, data)
-            // console.log(result)
+            let data3 = {members};
+
+
+            const result = await CardService.checkCardId(cardId);
             if(result) {
-                res.status(200).json({
-                    'msg': 'Updated card'
-                })
-            } else { 
-                throw new Error('Update failed');
+                const cardUpdate = await CardService.update(cardId, data)
+                if(cardUpdate) {
+                    const card = await CardService.getCard(cardId);
+                    const infoMembers = await CardService.getMembers(data3)
+                    res.status(200).json({
+                        'msg': 'Updated card',
+                        card,
+                        infoMembers
+                    })
+                }else {
+                    throw new Error('Update failed');
+                } 
+                
+            } else {
+                res.status(404).json({ error: 'CardId not found' }); 
             }
         } catch (error) {
-            next (error);
+            next(error);
         }
     };
 
@@ -97,14 +101,16 @@ class CardController {
     delete = async (req, res, next) => {
         try {
             const {cardId} = req.params;
+            
             const result = await CardService.delete(cardId)
-
-            if(result) {
+            if(result == true) {
                 res.status(200).json({
                     'msg': 'Deleted'
                 })
             }else {
-                throw new Error('Delete failed');
+                res.status(404).json({
+                    'msg': 'CardId not found'
+                })
             }
         } catch (error) {
             next (error);
@@ -128,15 +134,36 @@ class CardController {
     getCard = async (req, res, next) => {
         try {
             const {cardId} = req.params;
-            // Goi den service
-            const card = await CardService.getCard(cardId);
-            res.status(200).json({
-                card
-            });
+
+            const result = await CardService.checkCardId(cardId);
+            if(result) {
+                const card = await CardService.getCard(cardId);
+                        res.status(200).json({
+                            card
+                        })                 
+            } else {
+                res.status(404).json({ error: 'CardId not found' }); 
+            }
         } catch (error) {
-            next (error);
+            next(error);
         }
     };
+
+
+
+
+
+
+    //         const card = await CardService.getCard(cardId);
+    //         if(card) {
+    //             res.status(200).json({
+    //                 card
+    //             })
+    //         }
+    //     } catch (error) {
+    //         res.status(404).json({ error: 'CardId format is wrong' });  
+    //     }
+    // };
 }
 
 module.exports = new CardController();

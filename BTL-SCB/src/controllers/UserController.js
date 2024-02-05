@@ -50,17 +50,25 @@ class UserController {
             let data = {
                 username, password, email, phone, age
             }
-            const result = await UserService.update(id, data)
+
+            const result = await UserService.checkUserId(id);
             if(result) {
-                res.status(200).json({
-                    'msg': 'Updated'
-                })
-            }else {
-                throw new Error('Update failed');
+                const userUpdate = await UserService.update(id, data)
+                if(userUpdate) {
+                    const user = await UserService.getNewUser(id)
+                    res.status(200).json({
+                        'msg': 'Updated',
+                        user
+                    })
+                }else {
+                    throw new Error('Update failed');
+                } 
+                
+            } else {
+                res.status(404).json({ error: 'UserId not found' }); // Sai boardId 
             }
-            
         } catch (error) {
-            throw error;
+            next(error);
         }
     };
 
@@ -75,7 +83,7 @@ class UserController {
                     'msg': 'Deleted'
                 })
             }else {
-                res.status(200).json({
+                res.status(404).json({
                     'msg': 'UserId not found'
                 })
             }

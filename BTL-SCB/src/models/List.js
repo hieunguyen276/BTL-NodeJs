@@ -14,8 +14,9 @@ const listSchema = new mongoose.Schema({
 listSchema.pre('save', async function(next) {
   if (this.isNew) {
     try {
-      const count = await mongoose.model('List', listSchema).countDocuments();
-      this.position = count + 1;
+      const maxPosition = await mongoose.model('List', listSchema).findOne().sort({ position: -1 }).select('position');
+      const newPosition = maxPosition.position + 1;
+      this.position = newPosition;
       next();
     } catch (err) {
       return next(err);

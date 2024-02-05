@@ -13,7 +13,7 @@ const userValidationSchema = Joi.object({
   username: Joi.string().alphanum().required().messages({
 
   }),
-  password: Joi.string().required().messages({
+  password: Joi.string().min(8).required().messages({
     
   }),
   email: Joi.string().email().required(),
@@ -39,11 +39,8 @@ const validateUserData = (req, res, next) => {
 
 router.post('/', validateUserData, verifyToken, UserController.signup);
 router.get('/', UserController.getAll);
-router.put('/:id', UserController.update);
+router.put('/:id',validateUserData, UserController.update);
 router.delete('/:id', UserController.delete);
   
-
-
-
 
 module.exports = router;

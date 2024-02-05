@@ -1,23 +1,22 @@
 const User = require("../models/User");
+const bcrypt = require('bcrypt');
 
 class AuthService {
 
 
     login = async (data) => {
         try {
-            // const user = await User.findOne({ $and: [{ username: data.username }, { password: data.password }] });
             const user = await User.findOne({username: data.username});
             if (!user) {
                 return 'Username information is incorrect';
             } else {
-                const password = await User.findOne({password: data.password});
+                const password = await bcrypt.compare(data.password, user.password);
                 if (password) {
-                    return true;
+                    return user;
                 } else {
                     return 'Password information is incorrect';
                 }
             }
-           
         } catch (err) {
             throw err;
         }
